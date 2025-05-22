@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lemboba - Word Finder</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background-color: #e0f2f7;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 2.5em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cceeff;
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            font-size: 1em;
+            resize: vertical;
+        }
+
+        textarea {
+            min-height: 250px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+            display: block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .results {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed #cceeff;
+            font-size: 1.1em;
+            background-color: #f8fcfd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            font-weight: bold;
+            padding: 1px 3px;
+            border-radius: 3px;
+            box-shadow: 0 0 5px rgba(255,255,0,0.5);
+        }
+
+        .not-found-message {
+            color: #dc3545;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        .instructions {
+            color: #6c757d;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lemboba - Super Miku Lover!</h1>
+
+        <div>
+            <label for="text_input">Put your really massive text here, you know what else is....:</label>
+            <textarea id="text_input" placeholder="Paste your text here, the bigger the better!"></textarea>
+
+            <label for="search_word">Type the word you need want miku to find:</label>
+            <input type="text" id="search_word" placeholder="e.g., 'adventure' or 'secret'">
+
+            <button onclick="findWord()">Find Word!</button>
+        </div>
+
+        <div class="results">
+            <h2>Your Search Results:</h2>
+            <p id="result_display" class="instructions">Enter some text and a word above, then click 'Find Word!' to see magic happen.</p>
+        </div>
+    </div>
+
+    <script>
+        function findWord() {
+            const textInput = document.getElementById('text_input');
+            const searchWordInput = document.getElementById('search_word');
+            const resultDisplay = document.getElementById('result_display');
+
+            const enteredText = textInput.value;
+            const searchWord = searchWordInput.value.trim();
+
+            if (!enteredText || !searchWord) {
+                resultDisplay.innerHTML = "Please enter some text and a word to search!";
+                resultDisplay.className = "instructions";
+                return;
+            }
+
+            // Escape special characters in the search word to prevent issues with RegExp
+            const escapedSearchWord = searchWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            // Use template literals (backticks) for the RegExp constructor
+            const regex = new RegExp(`\\b${escapedSearchWord}\\b`, 'gi');
+
+            let highlightedText = enteredText;
+            let wordFound = false;
+
+            if (enteredText.match(regex)) {
+                highlightedText = enteredText.replace(regex, '<span class="highlight">$&</span>');
+                wordFound = true;
+            }
+
+            if (wordFound) {
+                resultDisplay.innerHTML = highlightedText;
+                resultDisplay.className = ""; // Remove any previous classes
+            } else {
+                resultDisplay.innerHTML = "Ahahah word not found loser";
+                resultDisplay.className = "not-found-message";
+            }
+        }
+    </script>
+</body>
+</html>
